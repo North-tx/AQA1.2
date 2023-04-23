@@ -1,26 +1,17 @@
-  package ru.netology.rest;
-    
-    import io.restassured.http.ContentType;
-    import org.junit.jupiter.api.Test;
-    
-    import static io.restassured.RestAssured.given;
-    
-    class MobileBankApiTestV2 {
-    @Test
-    void shouldReturnDemoAccounts() {
-    // Given - When - Then
-    // Предусловия
-    given()
-    .baseUri("http://localhost:9999/api/v1")
-    // Выполняемые действия
-    .when()
-    .get("/demo/accounts")
-    // Проверки
-    .then()
-    .statusCode(200)
-    // .header("Content-Type", "application/json; charset=UTF-8")
-    // специализированные проверки - лучше
-    .contentType(ContentType.JSON)
-    ;
-    }
-  }
+image: Ubuntu  # образ для сборки
+
+stack: jdk 11  # версия JDK
+
+branches:
+  only:
+    - main  # ветка git
+
+build: off  # будем использовать свой скрипт сборки
+
+install:
+  # запускаем SUT (& означает, что в фоновом режиме не блокируем терминал для запуска тестов)
+  - java -jar ./artifacts/app-mbank.jar &
+  - chmod +x gradlew
+
+build_script:
+  - ./gradlew test --info  # запускаем тест, флаг --info позволяет выводить больше информации
